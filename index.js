@@ -6,7 +6,7 @@ const cors = require('cors')
 const app = express()
 app.use(express.json())
 app.use(cors())
-app.use(express.static('build'))
+// app.use(express.static('build'))
 
 
 morgan.token('content', (req)=>JSON.stringify(req.body))
@@ -95,7 +95,7 @@ app.post("/api/persons",(req,res)=>{
 })
 
 
-app.get('/', (req,res)=>{
+app.get('*', (req,res)=>{
     res.sendFile("build/index.html")
 })
 
