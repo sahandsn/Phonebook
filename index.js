@@ -95,5 +95,10 @@ app.post("/api/persons",(req,res)=>{
 })
 
 
+app.get('/', (req,res)=>{
+    res.sendFile("build/index.html")
+})
+
+
 const PORT = 3001
 app.listen(PORT, () => console.log(`server running on port ${PORT}`))
