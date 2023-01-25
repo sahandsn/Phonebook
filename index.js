@@ -1,6 +1,7 @@
 const express = require("express")
 const morgan = require('morgan')
 const cors = require('cors')
+const path = require('path')
 
 
 const app = express()
@@ -96,7 +97,7 @@ app.post("/api/persons",(req,res)=>{
 
 
 app.get('/*', (req,res)=>{
-    res.sendFile("build/index.html")
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
 
