@@ -16,37 +16,13 @@ morgan.token('content', (req)=>JSON.stringify(req.body))
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :content"))
 
 
-// let notes = [
-//     { 
-//       "id": 1,
-//       "name": "sahand", 
-//       "number": "040-123456"
-//     },
-//     { 
-//       "id": 2,
-//       "name": "Ada Lovelace", 
-//       "number": "39-44-5323523"
-//     },
-//     { 
-//       "id": 3,
-//       "name": "Dan Abramov", 
-//       "number": "12-43-234345"
-//     },
-//     { 
-//       "id": 4,
-//       "name": "Mary Poppendieck", 
-//       "number": "39-23-6423122"
-//     }
-// ]
-
-
 app.get("/api/persons",(req,res)=>{
     Person
     .find({})
     .then(result => {
         // console.log(res);
-        console.log('phonebook:')
-        result.forEach(person => console.log(`${person.name} ${person.number}`))
+        // console.log('phonebook:')
+        // result.forEach(person => console.log(`${person.name} ${person.number}`))
         res.json(result)
         // mongoose.connection.close()
     })
@@ -59,35 +35,79 @@ app.get("/api/persons",(req,res)=>{
 
 
 app.get("/info", (req, res)=>{
-    const info = `<p>Phonebook has info for ${notes.length} people</p><p>${new Date}</p>`
-    res.send(info)
+    Person
+    .find({})
+    .then(result => {
+        // console.log(res);
+        // console.log('phonebook:')
+        // result.forEach(person => console.log(`${person.name} ${person.number}`))
+        const info = `<p>Phonebook has info for ${result.length} people</p><p>${new Date}</p>`
+        res.send(info)
+        // mongoose.connection.close()
+    })
+    .catch(err => {
+        console.warn(err)
+        // mongoose.connection.close()
+    })
+    
 })
 
 
 app.get("/api/persons/:id", (req, res)=>{
-    const id = Number(req.params.id)
-    const note = notes.find(n=>n.id===id)
-    if(note){
-        res.json(note)
-    }
-    else{
-        res.status(404).send('Not Found!')
-    }
+    // console.log(req.params.id)
+    // console.log(typeof req.params.id)
+
+    Person
+    .findById(req.params.id)
+    .then(result => {
+        // console.log(res);
+        // console.log('phonebook:')
+        // result.forEach(person => console.log(`${person.name} ${person.number}`))
+        if(result){
+            res.json(result)
+        }
+        else{
+            res.status(404).send('Not Found!')
+        }
+        // mongoose.connection.close()
+    })
+    .catch(err => {
+        console.warn(err)
+        // mongoose.connection.close()
+    })
+    
 })
 
 
 app.delete("/api/persons/:id", (req,res)=>{
-    const id = Number(req.params.id)
-    notes = notes.filter(n=>n.id!==id)
-    res.status(204).end() 
+    Person
+    .deleteOne({_id:req.params.id})
+    .then(result => {
+        // console.log(res);
+        // console.log('phonebook:')
+        // result.forEach(person => console.log(`${person.name} ${person.number}`))
+        if(result){
+            // console.log(result);
+            res.status(204).end()
+        }
+        else{
+            res.status(404).send('Not Found!')
+        }
+        // mongoose.connection.close()
+    })
+    .catch(err => {
+        console.warn(err)
+        // mongoose.connection.close()
+    })
+     
 })
 
 
-const randomNumber = () => {
-    const random = Math.floor(Math.random() * (100000000-1+1) + 1)
-    // console.log(random);
-    return random
-}
+// const randomNumber = () => {
+//     const random = Math.floor(Math.random() * (100000000-1+1) + 1)
+//     // console.log(random);
+//     return random
+// }
 
 
 app.post("/api/persons",(req,res)=>{
@@ -98,16 +118,20 @@ app.post("/api/persons",(req,res)=>{
     if(!body.name || !body.number){
         return res.status(400).json({error: 'Missing name/number'})
     }
-    if(notes.find(n=>n.name.toUpperCase() === body.name.trim().toUpperCase())){
-        return res.status(400).json({error: `${body.name.trim()} already used in Phonebook.`})
-    }
-    const note = {
-        id : randomNumber(),
+    // if(notes.find(n=>n.name.toUpperCase() === body.name.trim().toUpperCase())){
+    //     return res.status(400).json({error: `${body.name.trim()} already used in Phonebook.`})
+    // }
+    const person = new Person({
         name: body.name,
         number: body.number
-    }
-    notes = notes.concat(note)
-    res.status(200).json(note)
+    })
+    person
+    .save()
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err => console.warn(err))
+    
 })
 
 

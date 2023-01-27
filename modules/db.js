@@ -7,7 +7,7 @@ console.log(`connecting to ${url}`);
 // connect to db
 mongoose
 .connect(url)
-.then(res=>console.log(`connected to MongoDB: ${res}`))
+.then(res=>console.log(`connected to MongoDB`))
 .catch(err=>console.log(`did not connect to MongoDB: ${err}`))
 
 // configure the collection
