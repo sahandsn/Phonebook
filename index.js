@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require("express")
 const morgan = require('morgan')
 const cors = require('cors')
 const path = require('path')
+const Person = require('./modules/db')
 
 
 const app = express()
@@ -14,32 +16,45 @@ morgan.token('content', (req)=>JSON.stringify(req.body))
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :content"))
 
 
-let notes = [
-    { 
-      "id": 1,
-      "name": "sahand", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+// let notes = [
+//     { 
+//       "id": 1,
+//       "name": "sahand", 
+//       "number": "040-123456"
+//     },
+//     { 
+//       "id": 2,
+//       "name": "Ada Lovelace", 
+//       "number": "39-44-5323523"
+//     },
+//     { 
+//       "id": 3,
+//       "name": "Dan Abramov", 
+//       "number": "12-43-234345"
+//     },
+//     { 
+//       "id": 4,
+//       "name": "Mary Poppendieck", 
+//       "number": "39-23-6423122"
+//     }
+// ]
 
 
 app.get("/api/persons",(req,res)=>{
-    res.json(notes)
+    Person
+    .find({})
+    .then(result => {
+        // console.log(res);
+        console.log('phonebook:')
+        result.forEach(person => console.log(`${person.name} ${person.number}`))
+        res.json(result)
+        // mongoose.connection.close()
+    })
+    .catch(err => {
+        console.warn(err)
+        // mongoose.connection.close()
+    })
+    
 })
 
 
