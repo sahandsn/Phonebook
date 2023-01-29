@@ -97,7 +97,7 @@ app.get("/api/persons/:id", (req, res, next)=>{
 
 app.delete("/api/persons/:id", (req,res, next)=>{
     Person
-    .deleteOne({_id:req.params.id})
+    .findByIdAndRemove({_id:req.params.id})
     .then(result => {
         console.log(result);
         // console.log('phonebook:')
