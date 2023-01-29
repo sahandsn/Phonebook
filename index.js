@@ -102,7 +102,7 @@ app.delete("/api/persons/:id", (req,res, next)=>{
         console.log(result);
         // console.log('phonebook:')
         // result.forEach(person => console.log(`${person.name} ${person.number}`))
-        if(result.deletedCount === 1){
+        if(result){
             // console.log(result);
             res.status(204).end()
         }
