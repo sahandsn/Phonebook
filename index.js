@@ -22,9 +22,7 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
       return response.status(400).json({ error: 'malformatted id' })
     }
-    if(error.name === 'alreadyDeleted'){
-        return response.status(404).end()
-    }
+    
   
     next(error)
   }
@@ -102,7 +100,7 @@ app.delete("/api/persons/:id", (req,res, next)=>{
     Person
     .deleteOne({_id:req.params.id})
     .then(result => {
-        console.log(result);
+        // console.log(result);
         // console.log('phonebook:')
         // result.forEach(person => console.log(`${person.name} ${person.number}`))
         if(result.deletedCount === 1){
@@ -111,10 +109,7 @@ app.delete("/api/persons/:id", (req,res, next)=>{
         }
         else{
             // already deleted
-            res.message ="user does not exist on the db"
-            console.log(res.name)
-            res.name = 'alreadyDeleted'
-            next(result)
+            res.status(404).end()
         }
         // mongoose.connection.close()
     })
