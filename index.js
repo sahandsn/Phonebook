@@ -20,7 +20,7 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
   
     if (error.name === 'CastError') {
-      return response.status(400).send({ error: 'malformatted id' })
+      return response.status(400).json({ error: 'malformatted id' })
     }
   
     next(error)
@@ -28,7 +28,7 @@ const errorHandler = (error, request, response, next) => {
 
 const unknownEndpoint = (request, response) => {
     console.warn('unknown endpoint middleware.')
-    response.status(404).send({ error: 'unknown endpoint' })
+    response.status(404).json({ error: 'unknown endpoint.' })
 }
 
 
