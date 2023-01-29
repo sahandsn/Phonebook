@@ -108,7 +108,9 @@ app.delete("/api/persons/:id", (req,res, next)=>{
         }
         else{
 
-            res.status(404).Promise.reject()
+            res.status(404)
+            result.message = 'user was already deleted.'
+            next(result)
         }
         // mongoose.connection.close()
     })
