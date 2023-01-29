@@ -15,8 +15,24 @@ app.use(express.static('build'))
 morgan.token('content', (req)=>JSON.stringify(req.body))
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :content"))
 
+const errorHandler = (error, request, response, next) => {
+    console.warn('error hadling middileware.')
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    }
+  
+    next(error)
+  }
 
-app.get("/api/persons",(req,res)=>{
+const unknownEndpoint = (request, response) => {
+    console.warn('unknown endpoint middleware.')
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+
+app.get("/api/persons",(req,res, next)=>{
     Person
     .find({})
     .then(result => {
@@ -27,14 +43,14 @@ app.get("/api/persons",(req,res)=>{
         // mongoose.connection.close()
     })
     .catch(err => {
-        console.warn(err)
+        next(err)
         // mongoose.connection.close()
     })
     
 })
 
 
-app.get("/info", (req, res)=>{
+app.get("/info", (req, res, next)=>{
     Person
     .find({})
     .then(result => {
@@ -46,14 +62,14 @@ app.get("/info", (req, res)=>{
         // mongoose.connection.close()
     })
     .catch(err => {
-        console.warn(err)
+        next(err)
         // mongoose.connection.close()
     })
     
 })
 
 
-app.get("/api/persons/:id", (req, res)=>{
+app.get("/api/persons/:id", (req, res, next)=>{
     // console.log(req.params.id)
     // console.log(typeof req.params.id)
 
@@ -72,14 +88,14 @@ app.get("/api/persons/:id", (req, res)=>{
         // mongoose.connection.close()
     })
     .catch(err => {
-        console.warn(err)
+        next(err)
         // mongoose.connection.close()
     })
     
 })
 
 
-app.delete("/api/persons/:id", (req,res)=>{
+app.delete("/api/persons/:id", (req,res, next)=>{
     Person
     .deleteOne({_id:req.params.id})
     .then(result => {
@@ -96,7 +112,7 @@ app.delete("/api/persons/:id", (req,res)=>{
         // mongoose.connection.close()
     })
     .catch(err => {
-        console.warn(err)
+        next(err)
         // mongoose.connection.close()
     })
      
@@ -110,7 +126,7 @@ app.delete("/api/persons/:id", (req,res)=>{
 // }
 
 
-app.post("/api/persons",(req,res)=>{
+app.post("/api/persons",(req,res, next)=>{
     const body  = req.body
     // console.log(body);
     // console.log(body.name);
@@ -130,20 +146,18 @@ app.post("/api/persons",(req,res)=>{
     .then(result => {
         res.status(200).json(result)
     })
-    .catch(err => console.warn(err))
+    .catch(err => next(err))
     
 })
 
 
-app.get('/', (req,res)=>{
+app.get('/', (req,res, next)=>{
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
 
-app.get('*', (req,res)=>{
-    res.redirect("/")
-})
-
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => console.log(`server running on port ${PORT}`))
