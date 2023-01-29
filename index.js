@@ -83,7 +83,7 @@ app.get("/api/persons/:id", (req, res, next)=>{
             res.json(result)
         }
         else{
-            res.status(404).send('Not Found!')
+            res.status(404).json({error: 'user not found.'})
         }
         // mongoose.connection.close()
     })
@@ -99,7 +99,7 @@ app.delete("/api/persons/:id", (req,res, next)=>{
     Person
     .deleteOne({_id:req.params.id})
     .then(result => {
-        // console.log(res);
+        console.log(result);
         // console.log('phonebook:')
         // result.forEach(person => console.log(`${person.name} ${person.number}`))
         if(result){
