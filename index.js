@@ -128,6 +128,27 @@ app.delete("/api/persons/:id", (req,res, next)=>{
 // }
 
 
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+    const id = req.params.id
+    if(!body.name || !body.number){
+        return res.status(400).json({error: 'Missing name/number'})
+    }
+    const updatedPerson = {number: body.number, name: body.name}
+    Person
+    .findByIdAndUpdate(id, updatedPerson, {new: true})
+    .then(result => {
+        // result._id.toString()
+        // console.log('person',result);
+        res.status(200).json(result)
+    })
+    .catch(err=>{
+        console.log(err);
+        next(err)
+    })
+})
+
+
 app.post("/api/persons",(req,res, next)=>{
     const body  = req.body
     // console.log(body);
@@ -146,6 +167,7 @@ app.post("/api/persons",(req,res, next)=>{
     person
     .save()
     .then(result => {
+        // console.log(result)
         res.status(200).json(result)
     })
     .catch(err => next(err))
