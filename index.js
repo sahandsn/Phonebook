@@ -102,12 +102,13 @@ app.delete("/api/persons/:id", (req,res, next)=>{
         console.log(result);
         // console.log('phonebook:')
         // result.forEach(person => console.log(`${person.name} ${person.number}`))
-        if(result){
+        if(result.deletedCount === 1){
             // console.log(result);
             res.status(204).end()
         }
         else{
-            res.status(404).send('Not Found!')
+
+            res.status(404).Promise.reject()
         }
         // mongoose.connection.close()
     })
