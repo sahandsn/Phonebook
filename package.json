@@ -6,7 +6,8 @@
   "scripts": {
     "test": "testing",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build:ui": "cd C:\\Projects\\Phonebook && rm -rf build && cd C:\\Projects\\FullStackOpen-Course\\part2\\the-phonebook && npm run build && cp -r build C:\\Projects\\Phonebook"
   },
   "author": "sahand",
   "license": "ISC",
