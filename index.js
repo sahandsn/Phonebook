@@ -143,7 +143,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     }
     const updatedPerson = {name: body.name, number: body.number}
     Person
-    .findByIdAndUpdate(id, updatedPerson, {new: true})
+    .findByIdAndUpdate(id, updatedPerson, {new: true, runValidators: true, context: 'query'})
     .then(result => {
         // result._id.toString()
         // console.log(result);
@@ -156,7 +156,7 @@ app.put('/api/persons/:id', (req, res, next) => {
         
     })
     .catch(err=>{
-        console.log(err);
+        // console.log(err);
         next(err)
     })
 })
