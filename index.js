@@ -23,6 +23,12 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
       return response.status(400).json({ error: 'malformatted id' })
     }
+    if (error.name === 'ValidationError') {
+      return response.status(400).json(error)
+    }
+    if (error.name === 'BadId') {
+      return response.status(400).json(error)
+    }
     
   
     next(error)
@@ -135,13 +141,19 @@ app.put('/api/persons/:id', (req, res, next) => {
     if(!body.name || !body.number){
         return res.status(400).json({error: 'Missing name/number'})
     }
-    const updatedPerson = {number: body.number, name: body.name}
+    const updatedPerson = {name: body.name, number: body.number}
     Person
     .findByIdAndUpdate(id, updatedPerson, {new: true})
     .then(result => {
         // result._id.toString()
-        // console.log('person',result);
-        res.status(200).json(result)
+        // console.log(result);
+        if(!result){
+            next({message: 'BadId', name: 'BadId'})
+        }
+        else{
+            res.status(200).json(result)
+        }
+        
     })
     .catch(err=>{
         console.log(err);
@@ -176,9 +188,9 @@ app.post("/api/persons",(req,res, next)=>{
 })
 
 
-app.get('/', (req,res, next)=>{
-    res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
+// app.get('/', (req,res, next)=>{
+//     res.sendFile(path.join(__dirname, 'build', 'index.html'))
+// })
 
 
 app.use(unknownEndpoint)

@@ -12,7 +12,10 @@ mongoose
 
 // configure the collection
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        minLength: [3, `name should be at least 3 charachters long, your's was {VALUE}`]
+    },
     number: Number,
 })
 personSchema.set("toJSON", {
