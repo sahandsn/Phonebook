@@ -128,13 +128,6 @@ app.delete("/api/persons/:id", (req,res, next)=>{
 })
 
 
-// const randomNumber = () => {
-//     const random = Math.floor(Math.random() * (100000000-1+1) + 1)
-//     // console.log(random);
-//     return random
-// }
-
-
 app.put('/api/persons/:id', (req, res, next) => {
     const body = req.body
     const id = req.params.id
